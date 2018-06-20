@@ -1,0 +1,27 @@
+[
+    {
+        "band-start": 0,
+        "band-end": 11850,
+        "name": "Personal allowance",
+        "rate": 0.0
+    },
+    {
+        "band-start": 11851,
+        "band-end": 46350,
+        "name": "Basic rate",
+        "rate": 0.2
+    },
+    {
+        "band-start": 46351,
+        "band-end": 150000,
+        "name": "Higer rate",
+        "rate": 0.4
+    },
+    {
+        "band-start": 150000,
+        "band-end": null,
+        "name": "Additional rate",
+        "rate": 0.45
+    }
+]
+  
