@@ -1,0 +1,46 @@
+[{
+		"id": 1,
+		"name": "Tax free",
+		"description": "First £10,000 is tax free",
+		"minsalary": 1,
+		"maxsalary": 10000,
+		"rate": 0,
+		"exceptions": [{
+			"Company car": 100
+		}, {
+			"Super tax": 50
+		}],
+		"comments": "The 'exceptions' values are the percentage of the tax free allowance that's rexuced from certain employyes. Company car owners lose 100% of the allowance and those earning the super rate tax lose 50%"
+	},
+
+	{
+		"id": 2,
+		"name": "Basic rate",
+		"description": "£10,001 to £40,000 is taxed at 20%",
+		"minsalary": 10001,
+		"maxsalary": 40000,
+		"rate": 20,
+		"exceptions": []
+	},
+
+ 	{
+		"id": 3,
+		"name": "Higher rate",
+		"description": "£40,001 to £150,000 is taxed at 40%",
+		"minsalary": 40001,
+		"maxsalary": 150000,
+		"rate": 40,
+		"exceptions": []
+	},
+
+    {
+		"id": 4,
+		"name": "Super rate",
+		"description": "over £150,000 is taxed at 50%. Initial £10,00 tax free allowance is reduced by 50%",
+		"minsalary": 150001,
+		"maxsalary": 9999999999999,
+		"rate": 50,
+		"exceptions": []
+	}
+
+]
