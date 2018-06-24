@@ -41,14 +41,14 @@ function upload_file($file, $destination_name) {
 function upload_employees($file) {
     $employees = json_decode(file_get_contents($file['tmp_name']), TRUE);
     $tax = load_tax();
-    print_r($tax);
     $employee_objects = array_map(function($employee) use ($tax) {
         $employee_obj = new Employee($employee);
         $employee_obj->update_tax($tax);
         return $employee_obj;
     }, $employees);
-    save_employees($employees);
-    echo "<pre>"; print_r($employee_objects);
+    save_employees($employee_objects);
+    $test = load_employees();
+    echo "<pre>"; print_r($test);
 }
 
 function validate_employees($file) {

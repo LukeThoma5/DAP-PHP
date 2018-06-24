@@ -52,6 +52,11 @@ class Employee {
 
     }
 
+    function update_pay_stats() {
+        $this->net_yearly_pay = $this->salary - $this->tax;
+        $this->monthly_take_home_pay = $this->net_yearly_pay / 12;
+    }
+
     function update_tax($taxes) {
         $tax_from_last_band = 0;
         
@@ -98,6 +103,8 @@ class Employee {
                 return $values->tax_paid;
             }, $this->tax_values)
         );
+
+        $this->update_pay_stats();
     }
 }
 
@@ -108,7 +115,7 @@ function save_employees($employees) {
 }
 
 function load_employees() {
-    unserialize(file_get_contents('employees.bin'));
+    return unserialize(file_get_contents('employees.bin'));
 }
 
 ?>
