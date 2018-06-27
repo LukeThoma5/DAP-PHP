@@ -1,6 +1,7 @@
 <?php require_once("header.php"); ?>
 <?php require_once("employee.inc.php"); ?>
 <?php require_once("tax.inc.php"); ?>
+<?php require_once("helpers.inc.php"); ?>
 
 
 <form action="" method="post" enctype="multipart/form-data">
@@ -51,10 +52,12 @@ function upload_employees($file) {
     echo "<pre>"; print_r($test);
 }
 
+
+
 function validate_employees($file) {
     $is_valid = pathinfo($file['name'])['extension'] == 'json';
     if (!$is_valid) {
-        echo '<div class="card-panel teal lighten-2">The uploaded employee\'s file is not valid, please try again.</div>';
+        alert_box('The uploaded employee\'s file is not valid, please try again.');
     }
     return $is_valid;
 }
