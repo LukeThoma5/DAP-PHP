@@ -4,7 +4,7 @@
 <script>
     function nav_to_employee(id) {
         alert(id);
-        window.location.href = `employee/${id}`;
+        window.location.href = `employee.php?id=${id}`;
     }
 </script>
 
