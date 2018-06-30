@@ -1,5 +1,5 @@
-<?php require_once("header.php"); ?>
-<?php require_once("employee.inc.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/employee.inc.php"); ?>
 
 <script>
     function nav_to_employee(id) {
@@ -46,4 +46,4 @@
         </tbody>
       </table>
 
-<?php require_once("footer.php"); ?>
+<?php require_once("includes/footer.php"); ?>

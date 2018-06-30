@@ -1,5 +1,5 @@
-<?php require_once("header_without_auth.php"); ?>
-<?php require_once("helpers.inc.php"); ?>
+<?php require_once("includes/header_without_auth.php"); ?>
+<?php require_once("includes/helpers.inc.php"); ?>
 
 <div>
 <div class="row" style="width: 30%;
@@ -26,7 +26,7 @@ margin: 0 auto;">
 </div>
 
 
-<?php require_once("footer.php"); ?>
+<?php require_once("includes/footer.php"); ?>
 
 <?php
 
@@ -39,7 +39,7 @@ $password = $_POST['password'];
 $pw_hash = hash('sha256', $password);
 echo $pw_hash;
 
-$users = json_decode(file_get_contents('users.json'), TRUE);
+$users = json_decode(file_get_contents('storage/users.json'), TRUE);
 
 foreach($users as $index => $user) {
     if ($pw_hash === $user['password'] && $email === $user['username']) {

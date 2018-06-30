@@ -1,7 +1,7 @@
-<?php require_once("header.php"); ?>
-<?php require_once("employee.inc.php"); ?>
-<?php require_once("tax.inc.php"); ?>
-<?php require_once("helpers.inc.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/employee.inc.php"); ?>
+<?php require_once("includes/tax.inc.php"); ?>
+<?php require_once("includes/helpers.inc.php"); ?>
 
 
 <form action="" method="post" enctype="multipart/form-data">
@@ -28,16 +28,6 @@
 
 <?php
 
-function upload_file($file, $destination_name) {
-    print_r($file);
-    print_r(pathinfo($file['name']));
-    if (pathinfo($file['name'])['extension'] != 'json') {
-        echo "<h1>Rejected $destination_name file</h1>";
-    } else {
-        move_uploaded_file($file['tmp_name'], "uploads/$destination_name.json");
-    }
-}
-
 
 function upload_employees($file) {
     $employees = json_decode(file_get_contents($file['tmp_name']), TRUE);
@@ -48,14 +38,14 @@ function upload_employees($file) {
         return $employee_obj;
     }, $employees);
     save_employees($employee_objects);
-    $test = load_employees();
-    echo "<pre>"; print_r($test);
 }
 
-
+function is_json($file) {
+    return pathinfo($file['name'])['extension'] == 'json';
+}
 
 function validate_employees($file) {
-    $is_valid = pathinfo($file['name'])['extension'] == 'json';
+    $is_valid = is_json($file);
     if (!$is_valid) {
         alert_box('The uploaded employee\'s file is not valid, please try again.');
     }
@@ -75,7 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
         
         case 'tax':
-            upload_tax($file);
+            if (is_json($file)) {
+                upload_tax($file);
+            } else {
+                alert_box("Invalid tax table file");
+            }
             break;
 
         default:
@@ -87,4 +81,4 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
 
-<?php require_once("footer.php"); ?>
+<?php require_once("includes/footer.php"); ?>

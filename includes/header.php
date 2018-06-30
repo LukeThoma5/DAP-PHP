@@ -1,6 +1,6 @@
 <?php
-require_once("header_without_auth.php");
-require_once("helpers.inc.php");
+require_once("includes/header_without_auth.php");
+require_once("includes/helpers.inc.php");
 ?>
 
 <?php

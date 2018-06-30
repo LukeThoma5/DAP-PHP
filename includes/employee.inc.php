@@ -111,11 +111,11 @@ class Employee {
 class Tax_Values { }
 
 function save_employees($employees) {
-    file_put_contents('employees.bin', serialize($employees));
+    file_put_contents('storage/employees.bin', serialize($employees));
 }
 
 function load_employees() {
-    return unserialize(file_get_contents('employees.bin'));
+    return unserialize(file_get_contents('storage/employees.bin'));
 }
 
 ?>

@@ -1,14 +1,14 @@
-<?php require_once("header.php"); ?>
-<?php require_once("employee.inc.php"); ?>
-<?php require_once("helpers.inc.php"); ?>
-<?php require_once("config.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/employee.inc.php"); ?>
+<?php require_once("includes/helpers.inc.php"); ?>
+<?php require_once("includes/config.php"); ?>
 
 <?php
     $employees = load_employees();
     $id = $_GET['id'];
     $employee = NULL;
     foreach($employees as $index => $e) {
-        if ($e->id === $id) {
+        if ($e->id == $id) {
             $employee = $e;
             break;
         }
@@ -17,6 +17,7 @@
         alert_box("Unable to find employee $id");
         exit();
     }
+    
 ?>
 
 <script>
@@ -38,9 +39,9 @@ var saveBlob = (function () {
 
 function download_payslip() {
 
-    var employee = <?php echo json_encode($employee); ?>;
+    let employee = <?php echo json_encode($employee); ?>;
 
-    var data = {
+    let data = {
     "number": employee.id,
     "employee": {
         "name": `${employee.firstname} ${employee.lastname}`,
@@ -59,7 +60,7 @@ function download_payslip() {
     ]
 };
 
-body = {
+let body = {
         template: {  "shortid": GET_TEMPLATE_ID()
         },
         data : data
@@ -101,6 +102,8 @@ fetch(GET_JS_REPORT_URL(),
 .then(blob => window.saveBlob(blob, "report.pdf"))
 
 
+
+
 }
 
 
@@ -113,10 +116,10 @@ fetch(GET_JS_REPORT_URL(),
     <div class="card-panel grey lighten-5 z-depth-2 col s9">
             <dl>
                 <dt>Name</dt>
-                <dd>Mr Luke Foreman</dd>
+                <dd><?php echo $employee->firstname, " ", $employee->lastname; ?></dd>
 
                 <dt>Job Title</dt>
-                <dd>Degree Apprentice</dd>
+                <dd><?php echo $employee->jobTitle; ?></dd>
             </dl>
     </div>
 
@@ -227,4 +230,4 @@ echo "<div class=\"card-panel center grey lighten-5 z-depth-2 col l3 \" style=\"
 </tbody>
 </table>
 
-<?php require_once("footer.php"); ?>
+<?php require_once("includes/footer.php"); ?>
