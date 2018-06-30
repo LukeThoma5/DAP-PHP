@@ -1,7 +1,7 @@
 <?php require_once("header.php"); ?>
 <?php require_once("employee.inc.php"); ?>
 <?php require_once("helpers.inc.php"); ?>
-
+<?php require_once("config.php"); ?>
 
 <?php
     $employees = load_employees();
@@ -18,6 +18,96 @@
         exit();
     }
 ?>
+
+<script>
+
+/* saveBlob function taken from https://jsfiddle.net/koldev/cW7W5/ to pollyfill many browsers lack of window.saveAs */
+var saveBlob = (function () {
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    return function (blob, fileName) {
+        var url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
+}());
+/* end saveBlob */
+
+function download_payslip() {
+
+    var employee = <?php echo json_encode($employee); ?>;
+
+    var data = {
+    "number": employee.id,
+    "employee": {
+        "name": `${employee.firstname} ${employee.lastname}`,
+        "ni": employee.ni,
+        "jobTitle": employee.jobtitle,
+        "takeHomePay": employee.monthly_take_home_pay.toFixed(2)
+    },
+    "items": [{
+        "name": "Salary",
+        "price": (employee.salary / 12).toFixed(2)
+    },
+    {
+        "name": "Tax",
+        "price": (-employee.tax / 12).toFixed(2)
+    }
+    ]
+};
+
+body = {
+        template: {  "shortid": GET_TEMPLATE_ID()
+        },
+        data : data
+    }
+
+
+// Downloading of file from https://developer.mozilla.org/en-US/docs/Web/API/Body/body
+fetch(GET_JS_REPORT_URL(),
+{
+    headers: {
+        'User-Agent': 'request',
+      'Content-Type': 'application/json'
+    },
+    method: "POST",
+    body: JSON.stringify(body)
+})
+.then(response => {
+    const reader = response.body.getReader();
+    return new ReadableStream({
+    start(controller) {
+      return pump();
+      function pump() {
+        return reader.read().then(({ done, value }) => {
+          // When no more data needs to be consumed, close the stream
+          if (done) {
+              controller.close();
+              return;
+          }
+          // Enqueue the next data chunk into our target stream
+          controller.enqueue(value);
+          return pump();
+        });
+      }
+    }  
+  })
+})
+.then(stream => new Response(stream))
+.then(response => response.blob())
+.then(blob => window.saveBlob(blob, "report.pdf"))
+
+
+}
+
+
+</script>
+
+
+
 
 <div class="row">
     <div class="card-panel grey lighten-5 z-depth-2 col s9">
@@ -82,9 +172,59 @@
         </div>
         ";
     }
+
+    
     ?>
     
 
 </div>
+
+
+<?php
+
+echo "<div class=\"card-panel center grey lighten-5 z-depth-2 col l3 \" style=\"width: 30%; margin:auto\">
+        <dl>
+            <dt>Salary</dt>
+            <dd>$employee->salary</dd>
+
+            <dt>Total Tax Paid</dt>
+            <dd>$employee->tax</dd>
+
+            
+        </dl>
+        <dl>
+            <dt>Net Yearly Pay</dt>
+            <dd>$employee->net_yearly_pay</dd>
+
+            <dt>Monthly Take Home Pay</dt>
+            <dd>$employee->monthly_take_home_pay</dd>
+        </dl>    
+    </div>"
+
+?>
+
+<table>
+<thead>
+<tr>
+    <th>Income</th>
+    <th>Tax Month</th>
+    <th></th>
+</tr>
+</thead>
+<tbody>
+    <?php
+        date_default_timezone_set('UTC');
+        for ($i = 0; $i < 6; $i++) {
+            $payDay = date('F y', mktime(0, 0, 0, date("m")-$i  , 0 , date("Y")));
+            echo "<tr><td>$employee->monthly_take_home_pay</td>
+            <td>$payDay</td>
+            <td><td><button id=\"$payDay\" onclick=\"download_payslip(this.id);\" class=\"btn waves-effect waves-light\">View
+            <i class=\"far fa-eye left\"></i>
+        </button></td></td></tr>";
+        }
+
+    ?>
+</tbody>
+</table>
 
 <?php require_once("footer.php"); ?>
