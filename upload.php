@@ -5,9 +5,7 @@
 
 
 <form action="" method="post" enctype="multipart/form-data">
-    <ul>
-    <li>Employee Data: <input type="file" name="file-data"></input></li>
-    </ul>
+    <input type="file" name="file-data"></input>
     
     <div class="row">
     <div 
@@ -21,7 +19,7 @@
   </div>
     </div>
     <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-        <i class="material-icons right">send</i>
+        <i class="fas fa-upload"></i>
     </button>
 </form>
 

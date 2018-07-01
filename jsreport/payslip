@@ -1,0 +1,65 @@
+<style>
+    {#asset payslip-styles.css @encoding=utf8}
+</style>
+
+<div class="invoice-box">
+    <table cellpadding="0" cellspacing="0">
+        <tr class="top">
+            <td colspan="2">
+                <table>
+                    <tr>
+                        <td class="title">
+                            <img src="{#asset logo.png @encoding=dataURI}" style="width:100%; max-width:300px;" />
+                        </td>
+                        <td>
+                            Payslip #: {{number}}
+                            <br> Created: {{now}}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="information ">
+            <td colspan="2 ">
+                <table>
+                    <tr>
+                        <td>
+                            Payday Ltd.<br>
+                            Money Lane<br>
+                            West Sussex
+                        </td>
+                        <td>
+                            {{employee.name}}<br>
+                            {{employee.ni}}<br>
+                            {{employee.jobTitle}}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="heading ">
+            <td>
+                Item
+            </td>
+            <td>
+                Price
+            </td>
+        </tr>
+        {{#each items}}
+        <tr class="item">
+            <td>
+                {{name}}
+            </td>
+            <td>
+                £ {{price}}
+            </td>
+        </tr>
+        {{/each}}
+        <tr class="total ">
+            <td></td>
+            <td>
+                Take Home Pay: £{{employee.takeHomePay}}
+            </td>
+        </tr>
+    </table>
+</div>

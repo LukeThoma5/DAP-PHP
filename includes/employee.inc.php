@@ -1,4 +1,41 @@
 <?php
+
+
+final class CurrencyConverter
+{
+    
+    public static function Converter()
+    {
+        static $inst = null;
+        if ($inst === null) {
+            $inst = new CurrencyConverter();
+        }
+        return $inst;
+    }
+
+    /**
+     * Private constructor so nobody else can instantiate it
+     */
+    private function __construct()
+    {
+        $this->rates = array();
+    }
+
+    function convert_to_GBP($number, $currency)
+    {
+        $rate = $this->rates[$currency];
+        if (isset($rate)) {
+            return $number * $rate;
+        } else {
+            $url = file_get_contents('http://free.currencyconverterapi.com/api/v3/convert?q=' . $currency . '_GBP' . '&compact=ultra');
+            $json = json_decode($url, true);
+            $rate = $json[$currency . '_GBP'];
+            $this->rates[$currency] = $rate;
+            return $number * $rate;
+        }
+    }
+}
+
 class Employee {
 
     function convert_to_boolean($str_bool) {
@@ -14,6 +51,8 @@ class Employee {
         }
     }
 
+
+
     function __construct($employee) {
         $this->id = $employee['id'];
         $this->firstname = $employee['firstname'];
@@ -26,7 +65,10 @@ class Employee {
         $this->reportees = $employee['reports'];
         $this->manager = $employee['linemanager'];
         $this->salary = (int)$employee['salary'];
-        $this->currency = $employee['currency'];
+        $this->original_currency = $employee['currency'];
+        if ($this->original_currency != "GBP") {
+            $this->salary = CurrencyConverter::Converter()->convert_to_GBP($this->salary, $this->original_currency);
+        }
         $this->phone = $employee['phohe']; //Misspelling from the JSON
         $this->email = $employee['email'];
         $this->home_email = $employee['homeemail'];
@@ -57,6 +99,10 @@ class Employee {
         $this->monthly_take_home_pay = $this->net_yearly_pay / 12;
     }
 
+    function fmt($num) {
+        return '£' . number_format((float)$num, 2);
+    }
+
     function update_tax($taxes) {
         $tax_from_last_band = 0;
         
@@ -83,6 +129,9 @@ class Employee {
                         array_push($values->reductions_applied, $exception_key);
                     }
                 }
+            }
+            if ($values->percentage_reduction > 100) {
+                $values->percentage_reduction = 100;
             }
             $values->tax_from_last_band = $tax_from_last_band;
 

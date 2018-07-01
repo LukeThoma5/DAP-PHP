@@ -33,11 +33,9 @@ margin: 0 auto;">
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
-print_r($_POST);
 $email = $_POST['email'];
 $password = $_POST['password'];
 $pw_hash = hash('sha256', $password);
-echo $pw_hash;
 
 $users = json_decode(file_get_contents('storage/users.json'), TRUE);
 

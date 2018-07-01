@@ -119,7 +119,7 @@ fetch(GET_JS_REPORT_URL(),
                 <dd><?php echo $employee->firstname, " ", $employee->lastname; ?></dd>
 
                 <dt>Job Title</dt>
-                <dd><?php echo $employee->jobTitle; ?></dd>
+                <dd><?php echo $employee->jobtitle; ?></dd>
             </dl>
     </div>
 
@@ -143,25 +143,28 @@ fetch(GET_JS_REPORT_URL(),
                     <dd>£$values->min -> ", display_max($values->max), "</dd>
     
                     <dt>Income in band</dt>
-                    <dd>£$values->income_in_band</dd>
+                    <dd>{$employee->fmt($values->income_in_band)}</dd>
     
                     <dt>Reductions Applied<dt>
-                    <dd><ul>";
+                    <dd><ul style=\"margin: 0;\">";
                     foreach ($values->reductions_applied as $i => $reduction) {
                         echo "<li>$reduction</li>";
+                    }
+                    if (count($values->reductions_applied) == 0) {
+                        echo "<li>-</li>";
                     }
                     echo "</ul></dd>
                 </dl>
     
                 <dl>
                     <dt>Tax from last band</dt>
-                    <dd>£$values->tax_from_last_band</dd>
+                    <dd>{$employee->fmt($values->tax_from_last_band)}</dd>
     
                     <dt>Tax reduction</dt>
-                    <dd>£$values->tax_reduction</dd>
+                    <dd>{$employee->fmt($values->tax_reduction)}</dd>
     
                     <dt>Taxable amount<dt>
-                    <dd>£$values->taxable_amount</dd>
+                    <dd>{$employee->fmt($values->taxable_amount)}</dd>
                 </dl>
     
                 <dl>
@@ -169,7 +172,7 @@ fetch(GET_JS_REPORT_URL(),
                     <dd>$values->rate</dd>
     
                     <dt>Tax paid</dt>
-                    <dd>£$values->tax_paid</dd>
+                    <dd>{$employee->fmt($values->tax_paid)}</dd>
     
                 </dl>
         </div>
@@ -188,19 +191,19 @@ fetch(GET_JS_REPORT_URL(),
 echo "<div class=\"card-panel center grey lighten-5 z-depth-2 col l3 \" style=\"width: 30%; margin:auto\">
         <dl>
             <dt>Salary</dt>
-            <dd>$employee->salary</dd>
+            <dd>{$employee->fmt($employee->salary)}</dd>
 
             <dt>Total Tax Paid</dt>
-            <dd>$employee->tax</dd>
+            <dd>{$employee->fmt($employee->tax)}</dd>
 
             
         </dl>
         <dl>
             <dt>Net Yearly Pay</dt>
-            <dd>$employee->net_yearly_pay</dd>
+            <dd>{$employee->fmt($employee->net_yearly_pay)}</dd>
 
             <dt>Monthly Take Home Pay</dt>
-            <dd>$employee->monthly_take_home_pay</dd>
+            <dd>{$employee->fmt($employee->monthly_take_home_pay)}</dd>
         </dl>    
     </div>"
 
@@ -211,7 +214,7 @@ echo "<div class=\"card-panel center grey lighten-5 z-depth-2 col l3 \" style=\"
 <tr>
     <th>Income</th>
     <th>Tax Month</th>
-    <th></th>
+    <th>Actions</th>
 </tr>
 </thead>
 <tbody>
@@ -219,11 +222,11 @@ echo "<div class=\"card-panel center grey lighten-5 z-depth-2 col l3 \" style=\"
         date_default_timezone_set('UTC');
         for ($i = 0; $i < 6; $i++) {
             $payDay = date('F y', mktime(0, 0, 0, date("m")-$i  , 0 , date("Y")));
-            echo "<tr><td>$employee->monthly_take_home_pay</td>
+            echo "<tr><td>{$employee->fmt($employee->monthly_take_home_pay)}</td>
             <td>$payDay</td>
-            <td><td><button id=\"$payDay\" onclick=\"download_payslip(this.id);\" class=\"btn waves-effect waves-light\">View
+            <td><button id=\"$payDay\" onclick=\"download_payslip(this.id);\" class=\"btn waves-effect waves-light\">View
             <i class=\"far fa-eye left\"></i>
-        </button></td></td></tr>";
+        </button></td></tr>";
         }
 
     ?>

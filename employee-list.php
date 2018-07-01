@@ -3,7 +3,6 @@
 
 <script>
     function nav_to_employee(id) {
-        alert(id);
         window.location.href = `employee.php?id=${id}`;
     }
 </script>
@@ -33,9 +32,9 @@
     foreach($employees as $index => $employee) {
         echo '<tr>';
         echo "<td>$employee->firstname $employee->lastname</td>";
-        echo "<td>£$employee->salary</td>";
-        echo "<td>£$employee->tax</td>";
-        echo "<td>£$employee->monthly_take_home_pay</td>";
+        echo "<td>{$employee->fmt($employee->salary)}</td>";
+        echo "<td>{$employee->fmt($employee->tax)}</td>";
+        echo "<td>{$employee->fmt($employee->monthly_take_home_pay)}</td>";
         echo '<td><button id="' .$employee->id . '" onclick="nav_to_employee(this.id);" class="btn waves-effect waves-light">View
         <i class="far fa-eye left"></i>
     </button></td>';

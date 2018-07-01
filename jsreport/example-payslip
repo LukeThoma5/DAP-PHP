@@ -1,0 +1,18 @@
+{
+    "number": "123",
+    "employee": {
+        "name": "Roger Holden",
+        "ni": "NS1234567",
+        "jobTitle": "Senior Lecturer in Software Development",
+        "takeHomePay": 17000
+    },
+    "items": [{
+        "name": "Salary",
+        "price": 12000
+    },
+    {
+        "name": "Tax",
+        "price": -300
+    }
+    ]
+}
