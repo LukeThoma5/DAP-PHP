@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         
         case 'tax':
             if (is_json($file)) {
-                upload_tax($file);
+                upload_tax($file, 'load_employees', 'save_employees');
             } else {
                 alert_box("Invalid tax table file");
             }
