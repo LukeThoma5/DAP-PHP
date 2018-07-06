@@ -14,7 +14,13 @@
     $employees = load_employees();
     
     // Get the id out of the query string
-    $id = $_GET['id'];
+    if (array_key_exists('id', $_GET)) {
+        $id = $_GET['id'];
+    } else {
+        alert_box('No Id specified');
+        require_once("includes/footer.php");
+        exit();
+    }
 
     // Place holder for the found employee
     $employee = NULL;
@@ -28,6 +34,7 @@
     // If employee is still null print an alert box and exit early
     if (!isset($employee)) {
         alert_box("Unable to find employee $id");
+        require_once("includes/footer.php");
         exit();
     }
 

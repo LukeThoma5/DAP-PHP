@@ -26,21 +26,23 @@
 
 <?php
     // Load the employees from the seralised bin file.
+    function array_access($array, $key, $default) {
+        if (array_key_exists($key, $array)) {
+            return $array[$key];
+        }
+        return $default;
+    }
     $employees = load_employees();
 
     // Determine the page number
-    $page = $_GET['p'];
     // If not included default to 1
-    if (!isset($page)) {
-        $page = 1;
-    }
+    $page = array_access($_GET, 'p', 1);
+    echo $page;
 
     // Determine the page size
-    $page_size = $_GET['s'];
     // Default to 10 if not set;
-    if (!isset($page_size)) {
-        $page_size = 10;
-    }
+    $page_size = array_access($_GET, 's', 10);
+
     // Determine the current file path exclusing anything from the query string
     $url_base = strtok($_SERVER["REQUEST_URI"],'?');
 

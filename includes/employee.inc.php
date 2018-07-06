@@ -25,9 +25,8 @@ final class CurrencyConverter
     function convert_to_GBP($number, $currency)
     {
         // Try and get the rate from the known conversion rates
-        $rate = $this->rates[$currency];
-        if (isset($rate)) {
-            return $number * $rate;
+        if (array_key_exists($currency, $this->rates)) {
+            return $number * $this->rates[$currency];
         } else {
             // If we don't know the rate yet, make a call to currencyconverterapi to get the rate
             $url = file_get_contents('http://free.currencyconverterapi.com/api/v3/convert?q=' . $currency . '_GBP' . '&compact=ultra');
@@ -155,39 +154,75 @@ class Employee {
                 $values->income_in_band = $band_size;
             }
 
+            // Determine which reductions to apply
             $values->percentage_reduction = 0;
+            // New up the reductions applied array so it can be looped over on the employee page
             $values->reductions_applied = array();
-            foreach($band['exceptions'] as $_index => $exception) {
-                foreach($exception as $exception_key => $percentage) {
+            foreach($band['exceptions'] as $_index => $exception) { // Loop over the array of exception objects
+                foreach($exception as $exception_key => $percentage) { 
+                    // Loop over the object to get its 1 key
+                    // Wouldn't have been needed if the data was in a format like:
+                    /* 
+                        {
+                            ....
+                            exceptions: [
+                                { type: "car", value: 50 },
+                                ....
+                            ]
+                        }
+                    */
+
+                    // If the exception is in the band
                     if (in_array($exception_key, $this->exceptions)) {
+                        // Increase the reduction by the value of the exception
                         $values->percentage_reduction += $percentage;
+                        // Add the exception to the explanation
                         array_push($values->reductions_applied, $exception_key);
                     }
                 }
             }
+
+            // If many exceptions have been applied resulting in more than 100%
+            // Cap out at a 100% reduction
             if ($values->percentage_reduction > 100) {
                 $values->percentage_reduction = 100;
             }
+
+            // Set the amount of income from the previous band to be taxed in this band
             $values->tax_from_last_band = $tax_from_last_band;
 
-            $values->tax_reduction = $values->income_in_band * ($values->percentage_reduction/100);
-            $values->taxable_amount = $values->income_in_band + $values->tax_from_last_band - $values->tax_reduction;
-            $tax_from_last_band = $values->tax_reduction;
+            // Work out how much of the band gets moved into the next band
+            $values->tax_reduction = $values->income_in_band * ($values->percentage_reduction/100); // Convert % reduction into a percentage
+            $values->taxable_amount = $values->income_in_band + $values->tax_from_last_band - $values->tax_reduction; // Calculate how much income is going to be taxed
+            
+            // Reset the tax from the previous band to the amount not taxed from this band
+            $tax_from_last_band = $values->tax_reduction; 
 
-
+            // Convert the rate into a percentage
             $values->rate = $band['rate'] / 100;
+
+            // Calculate how much tax was paid
             $values->tax_paid = $values->taxable_amount * $values->rate;
-            if ($values->taxable_amount < 0) {
-                $values->tax_paid = 0;
-            }
+
+            
+            // Add the tax explanation to the list for displaying on employees page
             array_push($this->tax_values, $values);
         }
+
+        // Map the array of tax explanations into array of how much tax was paid in each band
+        // Then sum the values into a single total for how much tax was paid
+        /*
+        E.g.
+        const values =  [{tax_paid: 150, ...}, {tax_paid: 170, ...}, ...];
+        const tax = values.map(v => v.tax_paid).sum();
+        */
         $this->tax = array_sum(
             array_map(function($values) {
                 return $values->tax_paid;
             }, $this->tax_values)
         );
 
+        // Call helper function for setting useful values such as take home pay
         $this->update_pay_stats();
     }
 }
